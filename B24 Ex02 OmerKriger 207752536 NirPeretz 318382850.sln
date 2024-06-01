@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.34902.97
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ex02", "Ex02\Ex02.csproj", "{48FC2717-EB3F-43EF-B19A-DD69D9C57AE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryGameInterface", "MemoryGameInterface\MemoryGameInterface.csproj", "{91292539-AB64-47FC-B9FF-D0F0327A5753}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryGameLogics", "MemoryGameLogics\MemoryGameLogics.csproj", "{DA713F38-0256-4AF7-A29D-F49516E352E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{48FC2717-EB3F-43EF-B19A-DD69D9C57AE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48FC2717-EB3F-43EF-B19A-DD69D9C57AE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48FC2717-EB3F-43EF-B19A-DD69D9C57AE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48FC2717-EB3F-43EF-B19A-DD69D9C57AE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91292539-AB64-47FC-B9FF-D0F0327A5753}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91292539-AB64-47FC-B9FF-D0F0327A5753}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91292539-AB64-47FC-B9FF-D0F0327A5753}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91292539-AB64-47FC-B9FF-D0F0327A5753}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA713F38-0256-4AF7-A29D-F49516E352E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA713F38-0256-4AF7-A29D-F49516E352E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA713F38-0256-4AF7-A29D-F49516E352E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA713F38-0256-4AF7-A29D-F49516E352E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
