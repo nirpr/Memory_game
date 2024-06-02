@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MemoryGameLogics
 {
-    internal class GamePlay
+    public class GamePlay
     {
         // todo:
         // 1. try to make the whole class templates
@@ -39,7 +39,7 @@ namespace MemoryGameLogics
             createGameBoard();
         }
 
-        private PlayingCards<char>[,] GameBoard
+        public PlayingCards<char>[,] GameBoard
         {
             get
             {
