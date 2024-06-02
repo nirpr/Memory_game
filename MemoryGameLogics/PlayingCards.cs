@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MemoryGameLogics
 {
-    internal class PlayingCards<T>
+    public class PlayingCards<T>
     {
         private T m_CardValue;
         private bool m_IsVisible;
