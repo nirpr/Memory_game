@@ -6,3 +6,7 @@
         // 5. add private to numOfWins setter in Player class.  ===== Done
 6. add check in createGameBoard that the matrix number is Even ===== Done but need to see if good.
 7. handle computer choice alongside omer.
+8. (Omer added) add public getter to gameplay that access to the boolean of Players array if player is computer or not
+9. (Omer added) add public getter to gameplay that access the name of Players from players array (avoid keep two arrays of names).
+10. (Omer added) add public function for restart game (re create board) - players will be same only size and board can change.
+11. (Omer added) add public method (Getter) for know from logic part if gameover (perfer be property like GameOver). - Optional - return enum Game in Process or End.

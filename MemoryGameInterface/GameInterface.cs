@@ -1,66 +1,117 @@
-﻿using System;
+﻿using MemoryGameLogics;
+using System;
+using System.Collections.Generic;
 
 namespace MemoryGameInterface
 {
     public class GameInterface
     {
+        const int k_BoardHeightMinimumSize = 4, k_BoardHeightMaximumSize = 6;
+        const int k_BoardWidthMinimumSize = 4, k_BoardWidthMaximumSize = 6;
+
+        GamePlay m_GamePlay = null;
 
         public void StartGame()
         {
             bool gameIsStillPlaying = true;
 
+            m_GamePlay = gameInitilize();
+
+            GameConsoleUtils.GameStartingAnnouncement();
+
+            GameConsoleUtils.ShowGameBoard(m_GamePlay);
+
             while (gameIsStillPlaying)
             {
-                // Show Board
-                // Show Current Player Msg
+                GameConsoleUtils.AnnounceAboutCurrentPlayerTurn(m_GamePlay);
 
-                // Player Move #1
-
-                // Show Board, Player move update #1
-
-                // Player Move #2
-                
-                // Show Board, Player move update #2 - 2 seconds for wrong
+                playerMove();
 
                 // if GameStatus = { END or Process }
-                // - END: Show GameOver -> Announce Winner -> Ask for restart game
+                // TODO: if (m_GamePlay.GameOver)   // - END: Show GameOver -> Announce Winner -> Ask for restart game
+                {
+                    GameConsoleUtils.AnnounceGameOver(m_GamePlay);
+                    bool playRematch = askUserForRestartGame();
+                    if (playRematch)
+                    {
+                        int boardHeight, boardWidth;
+                        askUserForBoardSize(out boardHeight, out boardWidth);
+                        // TODO: make this method: m_GamePlay.rematch(boardHeight, boardWidth);
+                    }
+                    else
+                    {
+                        gameIsStillPlaying = false;
+                    }
+                }
                 // - Process: skip for next round.
             }
         }
 
-        public void makeGuess()
+        private GamePlay gameInitilize()
         {
-            // if current player is computer
+            List<string> listOfPlayerNames = new List<string>();
+            int boardHeight, boardWidth;
+
+            setPlayers(listOfPlayerNames);
+            askUserForBoardSize(out boardHeight, out boardWidth);
+
+            GamePlay gamePlay = new GamePlay(listOfPlayerNames, 4, 4);
+
+            return gamePlay;
+        }
+
+        private void playerMove()
+        {
+            // TODO: if current player is computer
             // - make random guess by GameLogic
 
-            // else (player is not computer)
-            
-            // while(move is not valid)
-            
-            // - get guess from user
-            
-            // - player choose quit, finish the game
-            
-            // - player made a illegal move announce it and try again.
+            int rowIndex, colIndex;
+            selectGameCell(out rowIndex, out colIndex);
+            m_GamePlay.firstCellChosenByPlayer(rowIndex, colIndex);
+            GameConsoleUtils.ShowGameBoard(m_GamePlay);
+
+            selectGameCell(out rowIndex, out colIndex);
+            m_GamePlay.firstCellChosenByPlayer(rowIndex, colIndex);
+            GameConsoleUtils.ShowGameBoard(m_GamePlay);
         }
 
-        public void askUserForBoardSize()
+        private void askUserForBoardSize(out int o_BoardHeight, out int o_BoardWidth)
         {
+            const bool k_WaitingTillValidInput = true;
+            Console.WriteLine($"Choose the size of the game board, The total number of squares on the board should be even.");
 
+
+            while (k_WaitingTillValidInput)
+            {
+                string heightMsg = $"Please enter the board height in range [{k_BoardHeightMinimumSize}-{k_BoardHeightMaximumSize}]";
+                o_BoardHeight = GameConsoleUtils.askUserForIntBetweenValues(heightMsg, k_BoardHeightMinimumSize, k_BoardHeightMaximumSize);
+
+                string widthMsg = $"Please enter the board height in range [{k_BoardHeightMinimumSize}-{k_BoardHeightMaximumSize}]";
+                o_BoardWidth = GameConsoleUtils.askUserForIntBetweenValues(widthMsg, k_BoardWidthMinimumSize, k_BoardWidthMaximumSize);
+                if((o_BoardHeight * o_BoardWidth)%2 == 0)
+                {
+                    Console.WriteLine($"The gameboard selected to be in size of {o_BoardHeight}x{o_BoardWidth}");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid size, The total number of squares on the board should be even. Try again !");
+                }
+            }
         }
 
-        public bool askUserForRestartGame()
+        private bool askUserForRestartGame()
         {
             const bool k_WaitingTillValidInput = true;
 
             while (k_WaitingTillValidInput)
             {
-                string userInput = askForUserInput("Do you want to play again? [Y/N]");
-                bool isInputValid = validateYesOrNoInput(userInput);
+                string userInput = GameConsoleUtils.askForUserInput("Do you want to play again? [Y/N]");
+                bool isInputValid = GameConsoleUtils.validateYesOrNoInput(userInput);
 
                 if (isInputValid)
                 {
-                    return true; // TODO: Make this part send answer from user input
+                    return Converter.ConvertYesOrNoToBool(userInput);
                 }
                 else
                 {
@@ -69,48 +120,50 @@ namespace MemoryGameInterface
             }
         }
 
-        private string askForUserInput(string i_MessageForUser)
+        private void setPlayers(List<string> i_ListOfPlayerNames)
         {
-            Console.WriteLine(i_MessageForUser);
-            return Console.ReadLine();
-        }
+            bool isGameAgaintsComputer = false;
 
-        private static bool validateYesOrNoInput(string i_UserInput)
-        {
-            string userInputInUpperCase = i_UserInput.ToUpper();
-            return userInputInUpperCase == "Y" || userInputInUpperCase == "N";
-        }
+            string playerOneName = GameConsoleUtils.askForUserInput("Hello, What is the name of the first player ? ");
+            i_ListOfPlayerNames.Add(playerOneName);
 
-        private void setPlayers()
-        {
-            setFirstPlayer();
-            setSecondPlayer();
-        }
+            isGameAgaintsComputer = GameConsoleUtils.askUserForYesOrNoQuestion("Do you want to play against the computer? [Y/N]");
 
-        private void setFirstPlayer()
-        {
-
-        }
-
-        private void setSecondPlayer()
-        {
-            const bool k_WaitingTillValidInput = true;
-
-            while (k_WaitingTillValidInput)
+            if (isGameAgaintsComputer)
             {
-                string userInput = askForUserInput("Do you want play against the computer? [Y/N]: ");
-                bool isInputValid = validateYesOrNoInput(userInput);
-                if (isInputValid)
+                string playerTwoName = GameConsoleUtils.askForUserInput("What is the name of the second player ? ");
+                i_ListOfPlayerNames.Add(playerTwoName);
+            }
+        }
+
+        private void selectGameCell(out int o_rowIndex, out int o_colIndex)
+        {
+            int rowIndex, colIndex;
+            const bool k_WaitingTillValidSelection = true;
+            while(k_WaitingTillValidSelection)
+            {
+               
+                string userInput = GameConsoleUtils.askForUserInput("Please enter game cell for your move: ");
+                try
                 {
-                    bool userAnswer = false; // TODO: need make it yes / no converting to bool
-                    // set player 2
-                    break;
+                    (colIndex, rowIndex) = Converter.CellReferenceConverter.ConvertCellIndex(userInput);
+                    PlayingCards<char> selectedPlayingCard = m_GamePlay.GameBoard[rowIndex, colIndex];
+                    if(selectedPlayingCard.IsVisible)
+                    {
+                        Console.WriteLine("The selected location is already displayed You have reached Unable to select it, try again");
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
-                else
+                catch (ArgumentException e)
                 {
-                    Console.WriteLine("Invalid input. Please try again!");
+                    Console.WriteLine($"{ e.Message}, Try again!");
                 }
             }
+            o_rowIndex = rowIndex;
+            o_colIndex = colIndex;
         }
     }
 
