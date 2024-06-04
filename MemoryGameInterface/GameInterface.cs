@@ -122,12 +122,10 @@ namespace MemoryGameInterface
 
         private void setPlayers(List<string> i_ListOfPlayerNames)
         {
-            bool isGameAgaintsComputer = false;
-
             string playerOneName = GameConsoleUtils.askForUserInput("Hello, What is the name of the first player ? ");
             i_ListOfPlayerNames.Add(playerOneName);
 
-            isGameAgaintsComputer = GameConsoleUtils.askUserForYesOrNoQuestion("Do you want to play against the computer? [Y/N]");
+            bool isGameAgaintsComputer = GameConsoleUtils.askUserForYesOrNoQuestion("Do you want to play against the computer? [Y/N]");
 
             if (isGameAgaintsComputer)
             {
