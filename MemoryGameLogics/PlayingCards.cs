@@ -19,7 +19,7 @@ namespace MemoryGameLogics
             {
                 return m_CardValue;
             }
-            set
+            internal set
             {
                 m_CardValue = value;
             }
@@ -30,7 +30,7 @@ namespace MemoryGameLogics
             {
                 return m_IsVisible;
             }
-            set
+            internal set
             {
                 m_IsVisible = value;
             }
@@ -41,7 +41,7 @@ namespace MemoryGameLogics
             {
                 return m_RowNumber;
             }
-            set
+            internal set
             {
                 m_RowNumber = value;
             }
@@ -52,7 +52,7 @@ namespace MemoryGameLogics
             {
                 return m_ColNumber;
             }
-            set
+            internal set
             {
                 m_ColNumber = value;
             }

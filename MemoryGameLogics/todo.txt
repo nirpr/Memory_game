@@ -1,0 +1,8 @@
+        // todo:
+        // 1. try to make the whole class templates
+        // 2. check correctness
+        // 3. think about integration with UI
+        // 4. add plahyer turn data member and control the turns. ===== Done
+        // 5. add private to numOfWins setter in Player class.  ===== Done
+6. add check in createGameBoard that the matrix number is Even ===== Done but need to see if good.
+7. handle computer choice alongside omer.
