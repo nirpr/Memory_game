@@ -26,7 +26,7 @@ namespace MemoryGameLogics
             {
                 return m_NumOfCorrectAnswers;
             }
-            set
+            internal set
             {
                 m_NumOfCorrectAnswers += value;
             }
@@ -54,7 +54,7 @@ namespace MemoryGameLogics
             {
                 return m_FirstChosenLetter;
             }
-            set
+            internal set
             {
                 m_FirstChosenLetter = value;
             }

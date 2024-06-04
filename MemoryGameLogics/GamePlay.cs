@@ -8,16 +8,13 @@ namespace MemoryGameLogics
 {
     public class GamePlay
     {
-        // todo:
-        // 1. try to make the whole class templates
-        // 2. check correctness
-        // 3. think about integration with UI
-
         private PlayingCards<char>[,] m_GameBoard;
         private int m_BoardHeight;
         private int m_BoardLength;
         private Player m_Player1;
         private Player m_Player2;
+        private int m_PlayerTurn;
+        private int m_NumberOfPlayers;
         private const string k_letterPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         private GamePlay(Player i_Player1, Player i_Player2, int i_BoardHeight, int i_BoardLenght)
@@ -26,6 +23,8 @@ namespace MemoryGameLogics
             m_Player2 = i_Player2;
             m_BoardHeight = i_BoardHeight;
             m_BoardLength = i_BoardLenght;
+            m_PlayerTurn = 1;
+            m_NumberOfPlayers = 2;
             createGameBoard();
         }
 
@@ -36,6 +35,8 @@ namespace MemoryGameLogics
             m_Player2 = new Player(v_IsComputer);
             m_BoardHeight = i_BoardHeight;
             m_BoardLength = i_BoardLenght;
+            m_PlayerTurn = 1;
+            m_NumberOfPlayers = 2;
             createGameBoard();
         }
 
@@ -45,6 +46,26 @@ namespace MemoryGameLogics
             {
                 return m_GameBoard;
             }
+        }
+
+        public int PlayerTurn
+        {
+            get
+            {
+                return m_PlayerTurn;
+            }
+            private set
+            {
+                if (m_PlayerTurn < m_NumberOfPlayers) // ready for array of players
+                {
+                    m_PlayerTurn += value;
+                }
+                else
+                {
+                    m_PlayerTurn = 1;
+                }
+            }
+
         }
 
         private void createGameBoard()
@@ -117,6 +138,7 @@ namespace MemoryGameLogics
             // todo - make sure to make the first choice visible if correct
             bool isCorrectAnswer;
             char secondChosenLetter = m_GameBoard[i_RowIndex, i_ColIndex].CardValue;
+            bool v_MakeVisible = true;
 
             if (i_IsPlayer1)
             {
@@ -124,12 +146,13 @@ namespace MemoryGameLogics
                 {
                     isCorrectAnswer = true;
                     m_Player1.NumOfCorrectAnswers++;
-                    m_GameBoard[m_Player1.FirstChosenLetter.RowNumber, m_Player1.FirstChosenLetter.ColNumber].IsVisible = true;
-                    m_GameBoard[i_RowIndex, i_ColIndex].IsVisible = true;
+                    m_GameBoard[m_Player1.FirstChosenLetter.RowNumber, m_Player1.FirstChosenLetter.ColNumber].IsVisible = v_MakeVisible;
+                    m_GameBoard[i_RowIndex, i_ColIndex].IsVisible = v_MakeVisible;
                 }
                 else 
                 {
                     isCorrectAnswer = false;
+                    this.PlayerTurn++;
                 }
             }
             else
@@ -138,12 +161,13 @@ namespace MemoryGameLogics
                 {
                     isCorrectAnswer = true;
                     m_Player2.NumOfCorrectAnswers++;
-                    m_GameBoard[m_Player2.FirstChosenLetter.RowNumber, m_Player2.FirstChosenLetter.ColNumber].IsVisible = true;
-                    m_GameBoard[i_RowIndex, i_ColIndex].IsVisible = true;
+                    m_GameBoard[m_Player2.FirstChosenLetter.RowNumber, m_Player2.FirstChosenLetter.ColNumber].IsVisible = v_MakeVisible;
+                    m_GameBoard[i_RowIndex, i_ColIndex].IsVisible = v_MakeVisible;
                 }
                 else
                 {
                     isCorrectAnswer = false;
+                    this.PlayerTurn++;
                 }
             }
 
