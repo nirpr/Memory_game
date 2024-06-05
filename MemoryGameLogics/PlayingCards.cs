@@ -57,5 +57,12 @@ namespace MemoryGameLogics
                 m_ColNumber = value;
             }
         }
+
+        public void InitChosenLetter(T i_Value, int i_RowNumber, int i_colNumber)
+        {
+            this.CardValue = i_Value;
+            this.RowNumber = i_RowNumber;
+            this.ColNumber = i_colNumber;
+        }
     }
 }

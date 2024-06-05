@@ -4,13 +4,18 @@
         // 3. think about integration with UI
         // 4. add plahyer turn data member and control the turns. ===== Done
         // 5. add private to numOfWins setter in Player class.  ===== Done
-6. add check in createGameBoard that the matrix number is Even ===== Done but need to see if good.
-7. handle computer choice alongside omer.
-8. (Omer added) add public getter to gameplay that access to the boolean of Players array if player is computer or not
-9. (Omer added) add public getter to gameplay that access the name of Players from players array (avoid keep two arrays of names).
-10. (Omer added) add public function for restart game (re create board) - players will be same only size and board can change.
+6. add check in createGameBoard that the matrix number is Even ===== Done
+7. handle computer choice alongside omer. ==== Done
+8. (Omer added) add public getter to gameplay that access to the boolean of Players array if player is computer or not ==== Done
+9. (Omer added) add public getter to gameplay that access the name of Players from players array (avoid keep two arrays of names ==== Done
+10. (Omer added) add public function for restart game (re create board) - players will be same only size and board can change. ==== Done
 11. (Omer added) add public method (Getter) for know from logic part if gameover (perfer be property like GameOver). - Optional - return enum Game in Process or End.
-     add data_member to gameplay that keeps how many visble cards are there.
-12. keep second choice for player so UI can print it
-13. change secondChoice to be like first (try to put it in the same func) and create function for comparing.
+     add data_member to gameplay that keeps how many visble cards are there. ==== Done
+12. keep second choice for player so UI can print it ==== Done
+13. change secondChoice to be like first (try to put it in the same func) and create function for comparing. ==== Done
+14. add an array with valid indicies so the function computerChoice won't choose a visible cell.
+15 method to get players scores (return array). ==== Done
+
+
+next:
 14. add an array with valid indicies so the function computerChoice won't choose a visible cell.
