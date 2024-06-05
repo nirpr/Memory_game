@@ -28,8 +28,8 @@ namespace MemoryGameInterface
                 playerMove();
 
                 // if GameStatus = { END or Process }
-                // TODO: if (m_GamePlay.GameOver)   // - END: Show GameOver -> Announce Winner -> Ask for restart game
-                {
+                // TODO: if (m_GamePlay.GameOver)   
+                { // - END: Show GameOver -> Announce Winner -> Ask for restart game
                     GameConsoleUtils.AnnounceGameOver(m_GamePlay);
                     bool playRematch = askUserForRestartGame();
                     if (playRematch)
@@ -43,7 +43,7 @@ namespace MemoryGameInterface
                         gameIsStillPlaying = false;
                     }
                 }
-                // - Process: skip for next round.
+                // - if game in Process: skip for next round.
             }
         }
 
@@ -62,26 +62,50 @@ namespace MemoryGameInterface
 
         private void playerMove()
         {
-            // TODO: if current player is computer
-            // - make random guess by GameLogic
+            const int k_TwoSecondsInMiliseconds = 2000;
 
-            int rowIndex, colIndex;
-            selectGameCell(out rowIndex, out colIndex);
-            m_GamePlay.firstCellChosenByPlayer(rowIndex, colIndex);
-            GameConsoleUtils.ShowGameBoard(m_GamePlay);
+            if (m_GamePlay.isComputerTurn())
+            {
+                m_GamePlay.computerChoice();
+                GameConsoleUtils.ShowGameBoard(m_GamePlay);
 
-            selectGameCell(out rowIndex, out colIndex);
-            m_GamePlay.firstCellChosenByPlayer(rowIndex, colIndex);
-            GameConsoleUtils.ShowGameBoard(m_GamePlay);
+                System.Threading.Thread.Sleep(k_TwoSecondsInMiliseconds);
+
+                m_GamePlay.computerChoice();
+                GameConsoleUtils.ShowGameBoard(m_GamePlay);
+
+                System.Threading.Thread.Sleep(k_TwoSecondsInMiliseconds);
+
+            }
+            else
+            {
+                int rowIndex, colIndex;
+                bool playerWantQuitGame;
+                int k_NumberOfGuesses = 2;
+                
+                for(int i = 0; i < k_NumberOfGuesses; i++ )
+                {
+                    selectGameCell(out rowIndex, out colIndex, out playerWantQuitGame);
+                    m_GamePlay.CellChosenByPlayer(rowIndex, colIndex);
+                    GameConsoleUtils.ShowGameBoard(m_GamePlay);
+                }
+
+                if(m_GamePlay.IsCurrectGuess() == false)
+                {
+                    System.Threading.Thread.Sleep(k_TwoSecondsInMiliseconds);
+                }
+
+                GameConsoleUtils.ShowGameBoard(m_GamePlay);
+            }
         }
 
         private void askUserForBoardSize(out int o_BoardHeight, out int o_BoardWidth)
         {
-            const bool k_WaitingTillValidInput = true;
+            const bool v_WaitingTillValidInput = true;
             Console.WriteLine($"Choose the size of the game board, The total number of squares on the board should be even.");
 
 
-            while (k_WaitingTillValidInput)
+            while (v_WaitingTillValidInput)
             {
                 string heightMsg = $"Please enter the board height in range [{k_BoardHeightMinimumSize}-{k_BoardHeightMaximumSize}]";
                 o_BoardHeight = GameConsoleUtils.askUserForIntBetweenValues(heightMsg, k_BoardHeightMinimumSize, k_BoardHeightMaximumSize);
@@ -134,14 +158,25 @@ namespace MemoryGameInterface
             }
         }
 
-        private void selectGameCell(out int o_rowIndex, out int o_colIndex)
+        private void selectGameCell(out int o_rowIndex, out int o_colIndex, out bool o_PlayerWantQuit)
         {
             int rowIndex, colIndex;
             const bool k_WaitingTillValidSelection = true;
+
             while(k_WaitingTillValidSelection)
             {
                
                 string userInput = GameConsoleUtils.askForUserInput("Please enter game cell for your move: ");
+
+                if(userInput == "Q")
+                {
+                    o_PlayerWantQuit = true;
+                }
+                else
+                {
+                    o_PlayerWantQuit = false;
+                }
+
                 try
                 {
                     (colIndex, rowIndex) = Converter.CellReferenceConverter.ConvertCellIndex(userInput);
