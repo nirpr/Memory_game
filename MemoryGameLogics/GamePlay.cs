@@ -13,12 +13,14 @@ namespace MemoryGameLogics
         private int m_BoardLength;
         private List<Player> m_PlayersArray;
         private int m_PlayerTurn;
+        private int m_NumberOfVisibleCards;
         private const string k_letterPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private static bool s_IsFirstChoice = true;
 
         public GamePlay(List<string> i_PlayersNamesList, int i_BoardHeight, int i_BoardLenght)
         {
             const bool v_IsComputer = true;
-            m_PlayersArray = InitPlayerList(i_PlayersNamesList);
+            m_PlayersArray = initPlayerList(i_PlayersNamesList);
 
             if (m_PlayersArray.Count <= 1)
             {
@@ -26,11 +28,12 @@ namespace MemoryGameLogics
             }
             m_BoardHeight = i_BoardHeight;
             m_BoardLength = i_BoardLenght;
+            m_NumberOfVisibleCards = 0;
             m_PlayerTurn = 0;
             createGameBoard();
         }
 
-        private List<Player> InitPlayerList(List<string> i_PlayersNamesList)
+        private List<Player> initPlayerList(List<string> i_PlayersNamesList)
         {
             const bool v_IsComputer = true;
             List<Player> playerList = new List<Player>();
@@ -71,6 +74,33 @@ namespace MemoryGameLogics
 
         }
 
+        public int NumberOfVisibleCards
+        {
+            get
+            {
+                return m_NumberOfVisibleCards;
+            }
+            private set
+            {
+                m_NumberOfVisibleCards++;
+            }
+        }
+
+        public bool IsComputerTurn()
+        {
+            return m_PlayersArray[this.PlayerTurn].IsComputer;
+        }
+
+        public string CurrentPlayerName()
+        {
+            return m_PlayersArray[this.PlayerTurn].PlayerName;
+        }
+
+        public bool IsGameOver()
+        {
+            return this.NumberOfVisibleCards < (m_BoardHeight * m_BoardLength);
+        }
+
         private void createGameBoard()
         {
             Random random = new Random();
@@ -88,7 +118,7 @@ namespace MemoryGameLogics
 
             for (int i = 0; i < gameBoardSize / 2; ++i)
             {
-                int randomLetterPoolIndex = random.Next(letterPoolList.Count); // need to make sure it works
+                int randomLetterPoolIndex = random.Next(letterPoolList.Count);
                 char letterForPair = letterPoolList[randomLetterPoolIndex];
                 matrixLetters.Add(letterForPair);
                 matrixLetters.Add(letterForPair);
@@ -125,47 +155,64 @@ namespace MemoryGameLogics
             }
         }
 
-        public char firstCellChosenByPlayer(int i_RowIndex, int i_ColIndex)
+        public void CellChosenByPlayer(int i_RowIndex, int i_ColIndex)
         {
             int currentPlayerIndex = this.PlayerTurn;
-            m_PlayersArray[currentPlayerIndex].FirstChosenLetter = m_GameBoard[i_RowIndex, i_ColIndex];
-            m_PlayersArray[currentPlayerIndex].FirstChosenLetter.RowNumber = i_RowIndex;
-            m_PlayersArray[currentPlayerIndex].FirstChosenLetter.ColNumber = i_ColIndex;
 
-            return m_GameBoard[i_RowIndex, i_ColIndex].CardValue; // maybe change to void, check with omer
-        }
-
-        public bool secondCellChosenByPlayer(int i_RowIndex, int i_ColIndex)
-        {
-            const bool v_MakeVisible = true;
-            bool isCorrectAnswer;
-            int currentPlayerIndex = this.PlayerTurn;
-            PlayingCards<char> firstChosenLetter = m_PlayersArray[currentPlayerIndex].FirstChosenLetter;
-            PlayingCards<char> secondChosenLetter = m_GameBoard[i_RowIndex, i_ColIndex];
-            
-
-            if (firstChosenLetter.CardValue == secondChosenLetter.CardValue)
+            if (s_IsFirstChoice)
             {
-                isCorrectAnswer = true;
-                m_PlayersArray[currentPlayerIndex].NumOfCorrectAnswers++;
-                firstChosenLetter.IsVisible = v_MakeVisible;
-                secondChosenLetter.IsVisible = v_MakeVisible;
+                m_PlayersArray[currentPlayerIndex].FirstChosenLetter = m_GameBoard[i_RowIndex, i_ColIndex];
+                m_PlayersArray[currentPlayerIndex].FirstChosenLetter.RowNumber = i_RowIndex;
+                m_PlayersArray[currentPlayerIndex].FirstChosenLetter.ColNumber = i_ColIndex;
             }
             else
             {
-                isCorrectAnswer = false;
+                m_PlayersArray[currentPlayerIndex].SecondChosenLetter = m_GameBoard[i_RowIndex, i_ColIndex];
+                m_PlayersArray[currentPlayerIndex].SecondChosenLetter.RowNumber = i_RowIndex;
+                m_PlayersArray[currentPlayerIndex].SecondChosenLetter.ColNumber = i_ColIndex;
+            }
+
+            s_IsFirstChoice = !s_IsFirstChoice;
+        }
+
+        public bool IsCorrectGuess()
+        {
+            const bool v_MakeVisible = true;
+            bool IsCorrectGuess;
+            int currentPlayerIndex = this.PlayerTurn;
+            PlayingCards<char> firstChosenLetter = m_PlayersArray[currentPlayerIndex].FirstChosenLetter;
+            PlayingCards<char> secondChosenLetter = m_PlayersArray[currentPlayerIndex].SecondChosenLetter;
+
+            if (firstChosenLetter.CardValue == secondChosenLetter.CardValue)
+            {
+                IsCorrectGuess = true;
+                m_PlayersArray[currentPlayerIndex].NumOfCorrectAnswers++;
+                firstChosenLetter.IsVisible = v_MakeVisible;
+                secondChosenLetter.IsVisible = v_MakeVisible;
+                this.NumberOfVisibleCards += 2;
+            }
+            else
+            {
+                IsCorrectGuess = false;
                 this.PlayerTurn++;
             }
 
-            return isCorrectAnswer;
+            return IsCorrectGuess;
         }
 
-        private void computerChoice(out int o_RowIndex, out int o_ColIndex)
+        public void ComputerChoice(out int o_RowIndex, out int o_ColIndex)
         {
             Random random = new Random();
 
             o_RowIndex = random.Next(m_BoardHeight);
             o_ColIndex = random.Next(m_BoardLength);
+        }
+
+        public void RestartGame(int i_BoardHeight, int i_BoardLenght)
+        {
+            m_BoardHeight = i_BoardHeight;
+            m_BoardLength = i_BoardLenght;
+            createGameBoard();
         }
     }
 }

@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace MemoryGameInterface
 {
-    public class GameConsoleUtils
+    internal class GameConsoleUtils
     {
         private const string k_Space = " ";
         private const string k_ColumnSeparator = "|";
 
-        public static void PrintBoard<T>(PlayingCards<T>[,] i_Board)
+        private static void printBoard<T>(PlayingCards<T>[,] i_Board)
         {
             int numOfRowsIncludeSeparations = i_Board.GetLength(0) * 2;
 
@@ -23,7 +23,7 @@ namespace MemoryGameInterface
                 if (rowIndex % 2 == 0)
                 {
                     Console.Write($"{rowIndex / 2}{k_ColumnSeparator}");
-                    printRowOfCards(ref i_Board, rowIndex / 2);
+                    printRowOfCards(i_Board, rowIndex / 2);
                 }
                 else
                 {
@@ -38,22 +38,14 @@ namespace MemoryGameInterface
             PlayingCards<char>[,] gameBoard = i_GamePlay.GameBoard;
 
             Screen.Clear();
-            GameConsoleUtils.PrintBoard(gameBoard);
+            GameConsoleUtils.printBoard(gameBoard);
         }
 
         public static void AnnounceAboutCurrentPlayerTurn(GamePlay i_GamePlay)
         {
             int currentPlayerId = i_GamePlay.PlayerTurn;
-
-            if (currentPlayerId == 1)
-            {
-                Console.WriteLine("Player 1 turn!");
-            }
-            else
-            {
-                bool isPlayerTwoComputer = false; // TODO: make it change by player type.
-                Console.WriteLine($"{(isPlayerTwoComputer ? "Computer" : "Player 2")}  turn!");
-            }
+            
+            Console.WriteLine($"It's {i_GamePlay.CurrentPlayerName()}'s turn now (Player{currentPlayerId})");
         }
 
         public static void GameStartingAnnouncement()
@@ -65,9 +57,6 @@ namespace MemoryGameInterface
 
         public static void AnnounceGameOver(GamePlay i_GamePlay)
         {
-            //const byte k_Player1Id = 1;
-            //const byte k_Player2Id = 2;
-
             //switch (who win)
             //{
             //    case Player1Win:
@@ -100,7 +89,7 @@ namespace MemoryGameInterface
             Console.WriteLine(indexesLineString);
         }
 
-        private static void printRowOfCards<T>(ref PlayingCards<T>[,] i_GameBoard, int i_RowIndex)
+        private static void printRowOfCards<T>(PlayingCards<T>[,] i_GameBoard, int i_RowIndex)
         {
             T PlayCard;
             StringBuilder rowOfCards = new StringBuilder();
@@ -134,19 +123,19 @@ namespace MemoryGameInterface
             Console.WriteLine(rowOfSepration);
         }
 
-        internal static string askForUserInput(string i_MessageForUser)
+        public static string askForUserInput(string i_MessageForUser)
         {
             Console.WriteLine(i_MessageForUser);
             return Console.ReadLine();
         }
 
-        internal static bool validateYesOrNoInput(string i_UserInput)
+        private static bool validateYesOrNoInput(string i_UserInput)
         {
             string userInputInUpperCase = i_UserInput.ToUpper();
             return userInputInUpperCase == "Y" || userInputInUpperCase == "N";
         }
 
-        internal static bool askUserForYesOrNoQuestion(string i_questionForUser)
+        public static bool AskUserForYesOrNoQuestion(string i_questionForUser)
         {
             const bool k_WaitingTillValidInput = true;
 
@@ -165,7 +154,7 @@ namespace MemoryGameInterface
             }
         }
 
-        internal static int askUserForIntBetweenValues(string i_questionForUser, int i_MinValue, int i_MaxValue)
+        public static int AskUserForIntBetweenValues(string i_questionForUser, int i_MinValue, int i_MaxValue)
         {
             const bool k_WaitingTillValidInput = true;
 
