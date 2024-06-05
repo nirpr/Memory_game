@@ -13,6 +13,7 @@ namespace MemoryGameLogics
         private int m_NumOfCorrectAnswers;
         private const string k_ComputerName = "Computer";
         private PlayingCards<char> m_FirstChosenLetter;
+        private PlayingCards<char> m_SecondChosenLetter;
 
         internal Player(bool i_isComputer, string i_playerName = k_ComputerName)
         {
@@ -57,6 +58,18 @@ namespace MemoryGameLogics
             internal set
             {
                 m_FirstChosenLetter = value;
+            }
+        }
+
+        public PlayingCards<char> SecondChosenLetter
+        {
+            get
+            {
+                return m_SecondChosenLetter;
+            }
+            internal set
+            {
+                m_SecondChosenLetter = value;
             }
         }
     }
