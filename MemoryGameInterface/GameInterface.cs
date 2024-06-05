@@ -43,6 +43,8 @@ namespace MemoryGameInterface
                     }
                 }
             }
+
+            Console.WriteLine("Game is over, good bye !");
         }
 
         private GamePlay gameInitilize()
@@ -147,7 +149,7 @@ namespace MemoryGameInterface
         {
             int rowIndex, colIndex;
             const bool k_WaitingTillValidSelection = true;
-            const int k_NotRelvant_Value = -1;
+            const int k_NotRelevant_Value = -1;
 
             while(k_WaitingTillValidSelection)
             {
@@ -156,8 +158,8 @@ namespace MemoryGameInterface
                 if(userInput == "Q")
                 {
                     o_PlayerWantQuit = true;
-                    o_rowIndex = k_NotRelvant_Value;
-                    o_colIndex = k_NotRelvant_Value;
+                    o_rowIndex = k_NotRelevant_Value;
+                    o_colIndex = k_NotRelevant_Value;
                     return;
                 }
                 else

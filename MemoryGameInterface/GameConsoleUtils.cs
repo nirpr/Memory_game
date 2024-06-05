@@ -57,23 +57,51 @@ namespace MemoryGameInterface
 
         public static void AnnounceGameOver(GamePlay i_GamePlay)
         {
-            //switch (who win)
-            //{
-            //    case Player1Win:
-            //        AnnounceAboutWinner(k_Player1Id);
-            //        break;
-            //    case Player2Win:
-            //        AnnounceAboutWinner(k_Player2Id);
-            //        break;
-            //    case Draw:
-            //        Console.WriteLine("It's a draw!");
-            //        break;
-            //}
+            PrintScoreBoard(i_GamePlay);
+            AnnounceAboutWinner(i_GamePlay);
         }
 
-        public static void AnnounceAboutWinner(byte i_WinnerId)
+        public static void PrintScoreBoard(GamePlay i_GamePlay)
         {
-            Console.WriteLine($"The winner of this round of the game is player {i_WinnerId}!");
+            StringBuilder leaderBoard = new StringBuilder();
+            List<int> scoreBoardArray = i_GamePlay.ArrayOfPlayersScores();
+
+            leaderBoard.AppendLine("--------- Score Board ---------");
+            for(int i=0; i<scoreBoardArray.Count; i++)
+            {
+                leaderBoard.AppendLine($"Player{i+1}: {i_GamePlay.PlayerIdName(i)}, Score: {scoreBoardArray[i]}");
+            }
+
+            Console.WriteLine(leaderBoard);
+        }
+
+        public static void AnnounceAboutWinner(GamePlay i_GamePlay)
+        {
+            List<int> scoreBoardArray = i_GamePlay.ArrayOfPlayersScores();
+            int highestScoreInGame = scoreBoardArray.Max();
+            List<string> Winners = new List<string>();
+
+            for(int i=0;i< scoreBoardArray.Count; i++) 
+            {
+                if (scoreBoardArray[i] == highestScoreInGame)
+                {
+                    Winners.Add(i_GamePlay.PlayerIdName(i));
+                }
+            }
+
+            if(Winners.Count >= 2)
+            {
+                Console.Write("There is a tie between");
+                foreach (string name in Winners)
+                {
+                    Console.Write($", {name}");
+                }
+                Console.WriteLine(".");
+            }
+            else
+            {
+                Console.WriteLine($"The winner of this round of the game is {i_GamePlay.PlayerIdName(i)} with Score of {highestScoreInGame}!");
+            }
         }
 
         private static void printHeadLineOfIndexes(int i_Size)
@@ -91,19 +119,20 @@ namespace MemoryGameInterface
 
         private static void printRowOfCards<T>(PlayingCards<T>[,] i_GameBoard, int i_RowIndex)
         {
-            T PlayCard;
+            int k_SpacesForHiddenCard = 1;
+            T playCard;
             StringBuilder rowOfCards = new StringBuilder();
-            int k = 1; // TODO: Make it smart k Var
+
             for (int colIndex = 0; colIndex < i_GameBoard.GetLength(0); colIndex++)
             {
-                if (i_GameBoard[i_RowIndex, colIndex].IsVisible)
+                if (i_GameBoard[i_RowIndex, colIndex].IsVisible) // TODO: Add or for visible options
                 {
-                    PlayCard = i_GameBoard[i_RowIndex, colIndex].CardValue;
-                    rowOfCards.Append($" {PlayCard.ToString()} {k_ColumnSeparator}");
+                    playCard = i_GameBoard[i_RowIndex, colIndex].CardValue;
+                    rowOfCards.Append($" {playCard.ToString()} {k_ColumnSeparator}");
                 }
                 else
                 {
-                    rowOfCards.Append(' ', k); // TODO: Make it smart k Var
+                    rowOfCards.Append(' ', k_SpacesForHiddenCard);
                 }
             }
 
@@ -112,12 +141,12 @@ namespace MemoryGameInterface
 
         private static void printRowForSeparation(int i_Width)
         {
-            const int k = 4; // TODO: Change it to smart var
+            const int k_NumberOfBottonSepratorsForEachCard = 4;
             StringBuilder rowOfSepration = new StringBuilder();
 
             for (int colIndex = 0; colIndex < i_Width; colIndex++)
             {
-                rowOfSepration.Append('=', k); // TODO: Change it to smart var
+                rowOfSepration.Append('=', k_NumberOfBottonSepratorsForEachCard);
             }
 
             Console.WriteLine(rowOfSepration);
@@ -126,12 +155,14 @@ namespace MemoryGameInterface
         public static string askForUserInput(string i_MessageForUser)
         {
             Console.WriteLine(i_MessageForUser);
+
             return Console.ReadLine();
         }
 
         private static bool validateYesOrNoInput(string i_UserInput)
         {
             string userInputInUpperCase = i_UserInput.ToUpper();
+
             return userInputInUpperCase == "Y" || userInputInUpperCase == "N";
         }
 
