@@ -10,3 +10,7 @@
 9. (Omer added) add public getter to gameplay that access the name of Players from players array (avoid keep two arrays of names).
 10. (Omer added) add public function for restart game (re create board) - players will be same only size and board can change.
 11. (Omer added) add public method (Getter) for know from logic part if gameover (perfer be property like GameOver). - Optional - return enum Game in Process or End.
+     add data_member to gameplay that keeps how many visble cards are there.
+12. keep second choice for player so UI can print it
+13. change secondChoice to be like first (try to put it in the same func) and create function for comparing.
+14. add an array with valid indicies so the function computerChoice won't choose a visible cell.
