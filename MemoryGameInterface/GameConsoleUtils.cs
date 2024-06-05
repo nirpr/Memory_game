@@ -69,7 +69,7 @@ namespace MemoryGameInterface
             leaderBoard.AppendLine("--------- Score Board ---------");
             for(int i=0; i<scoreBoardArray.Count; i++)
             {
-                leaderBoard.AppendLine($"Player{i+1}: {i_GamePlay.PlayerIdName(i)}, Score: {scoreBoardArray[i]}");
+                leaderBoard.AppendLine($"Player{i+1}: {i_GamePlay.GetNameByIndex(i)}, Score: {scoreBoardArray[i]}");
             }
 
             Console.WriteLine(leaderBoard);
@@ -85,7 +85,7 @@ namespace MemoryGameInterface
             {
                 if (scoreBoardArray[i] == highestScoreInGame)
                 {
-                    Winners.Add(i_GamePlay.PlayerIdName(i));
+                    Winners.Add(i_GamePlay.GetNameByIndex(i));
                 }
             }
 
@@ -100,7 +100,7 @@ namespace MemoryGameInterface
             }
             else
             {
-                Console.WriteLine($"The winner of this round of the game is {i_GamePlay.PlayerIdName(i)} with Score of {highestScoreInGame}!");
+                Console.WriteLine($"The winner of this round of the game is {Winners[0]} with Score of {highestScoreInGame}!");
             }
         }
 
@@ -125,7 +125,8 @@ namespace MemoryGameInterface
 
             for (int colIndex = 0; colIndex < i_GameBoard.GetLength(0); colIndex++)
             {
-                if (i_GameBoard[i_RowIndex, colIndex].IsVisible) // TODO: Add or for visible options
+                PlayingCards<T> playingCard = i_GameBoard[i_RowIndex, colIndex];
+                if (playingCard.VisibilityOption == eVisibleOptions.Visible || playingCard.VisibilityOption == eVisibleOptions.TemporaryVisible)
                 {
                     playCard = i_GameBoard[i_RowIndex, colIndex].CardValue;
                     rowOfCards.Append($" {playCard.ToString()} {k_ColumnSeparator}");

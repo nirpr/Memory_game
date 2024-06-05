@@ -171,7 +171,7 @@ namespace MemoryGameInterface
                 {
                     (colIndex, rowIndex) = Converter.CellReferenceConverter.ConvertCellIndex(userInput);
                     PlayingCards<char> selectedPlayingCard = m_GamePlay.GameBoard[rowIndex, colIndex];
-                    if(selectedPlayingCard.IsVisible)
+                    if(selectedPlayingCard.VisibilityOption != eVisibleOptions.NotVisible)
                     {
                         Console.WriteLine("The selected location is already displayed You have reached Unable to select it, try again");
                     }
