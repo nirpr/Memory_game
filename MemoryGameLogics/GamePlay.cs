@@ -13,14 +13,14 @@ namespace MemoryGameLogics
         private int m_BoardLength;
         private List<Player> m_PlayersArray;
         private int m_PlayerTurn;
-        private int m_NumberOfVisibleCards;
         private const string k_letterPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         private static bool s_IsFirstChoice = true;
+        private int m_NumberOfVisibleCards; // change after finished array
 
         public GamePlay(List<string> i_PlayersNamesList, int i_BoardHeight, int i_BoardLenght)
         {
             const bool v_IsComputer = true;
-            m_PlayersArray = initPlayerList(i_PlayersNamesList);
+            m_PlayersArray = initPlayerArray(i_PlayersNamesList);
 
             if (m_PlayersArray.Count <= 1)
             {
@@ -28,22 +28,22 @@ namespace MemoryGameLogics
             }
             m_BoardHeight = i_BoardHeight;
             m_BoardLength = i_BoardLenght;
-            m_NumberOfVisibleCards = 0;
+            m_NumberOfVisibleCards = 0;  // change after finished array
             m_PlayerTurn = 0;
             createGameBoard();
         }
 
-        private List<Player> initPlayerList(List<string> i_PlayersNamesList)
+        private List<Player> initPlayerArray(List<string> i_PlayersNamesList)
         {
             const bool v_IsComputer = true;
-            List<Player> playerList = new List<Player>();
+            List<Player> playerArray = new List<Player>();
 
             for (int i = 0; i < i_PlayersNamesList.Count; ++i)
             {
-                playerList.Add(new Player(!v_IsComputer, i_PlayersNamesList[i]));
+                playerArray.Add(new Player(!v_IsComputer, i_PlayersNamesList[i]));
             }
 
-            return playerList;
+            return playerArray;
         }
 
         public PlayingCards<char>[,] GameBoard
@@ -99,6 +99,18 @@ namespace MemoryGameLogics
         public bool IsGameOver()
         {
             return this.NumberOfVisibleCards < (m_BoardHeight * m_BoardLength);
+        }
+
+        public List<int> ArrayOfPlayersScores()
+        {
+            List<int> playersScores = new List<int>();
+
+            foreach (var player in m_PlayersArray)
+            {
+                playersScores.Add(player.NumOfCorrectAnswers);
+            }
+
+            return playersScores;
         }
 
         private void createGameBoard()
@@ -200,7 +212,7 @@ namespace MemoryGameLogics
             return IsCorrectGuess;
         }
 
-        public void ComputerChoice(out int o_RowIndex, out int o_ColIndex)
+        public void ComputerChoice(out int o_RowIndex, out int o_ColIndex) // need to change so it will choose only invisible cards.
         {
             Random random = new Random();
 
