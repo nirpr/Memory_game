@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MemoryGameLogics
 {
-    public class Player
+    internal class Player
     {
         private readonly bool r_IsComputer;
         private readonly string r_PlayerName;

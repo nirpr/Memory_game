@@ -71,6 +71,11 @@ namespace MemoryGameLogics
 
         }
 
+        public bool isComputerTurn()
+        {
+            return m_PlayersArray[this.PlayerTurn].IsComputer;
+        }
+
         private void createGameBoard()
         {
             Random random = new Random();
@@ -160,7 +165,7 @@ namespace MemoryGameLogics
             return isCorrectAnswer;
         }
 
-        private void computerChoice(out int o_RowIndex, out int o_ColIndex)
+        public void computerChoice(out int o_RowIndex, out int o_ColIndex)
         {
             Random random = new Random();
 
