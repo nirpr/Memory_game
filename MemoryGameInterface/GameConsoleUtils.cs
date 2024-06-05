@@ -10,25 +10,26 @@ namespace MemoryGameInterface
 {
     internal class GameConsoleUtils
     {
-        private const string k_Space = " ";
+        private const char k_Space = ' ';
         private const string k_ColumnSeparator = "|";
+        private const int k_NumberOfSpacesBeforeStartLine = 3;
 
         private static void printBoard<T>(PlayingCards<T>[,] i_Board)
         {
-            int numOfRowsIncludeSeparations = i_Board.GetLength(0) * 2;
+            const int k_IndexForRowsInBoard = 0, k_IndexForColsInBoard = 1;
+            int numOfRowsIncludeSeparations = i_Board.GetLength(k_IndexForRowsInBoard) * 2 + 1;
 
-            printHeadLineOfIndexes(i_Board.GetLength(0));
+            printHeadLineOfIndexes(i_Board.GetLength(k_IndexForColsInBoard));
             for (int rowIndex = 0; rowIndex < numOfRowsIncludeSeparations; rowIndex++)
             {
                 if (rowIndex % 2 == 0)
                 {
-                    Console.Write($"{rowIndex / 2}{k_ColumnSeparator}");
-                    printRowOfCards(i_Board, rowIndex / 2);
+                    printRowForSeparation(i_Board.GetLength(k_IndexForColsInBoard));
                 }
                 else
                 {
-                    Console.Write(k_Space);
-                    printRowForSeparation(i_Board.GetLength(0));
+                    Console.Write($" {(rowIndex / 2)+1} {k_ColumnSeparator}");
+                    printRowOfCards(i_Board, rowIndex / 2);
                 }
             }
         }
@@ -45,7 +46,7 @@ namespace MemoryGameInterface
         {
             int currentPlayerId = i_GamePlay.PlayerTurn;
             
-            Console.WriteLine($"It's {i_GamePlay.CurrentPlayerName()}'s turn now (Player{currentPlayerId})");
+            Console.WriteLine($"It's {i_GamePlay.CurrentPlayerName()}'s turn now (Player{currentPlayerId+1})");
         }
 
         public static void GameStartingAnnouncement()
@@ -108,10 +109,11 @@ namespace MemoryGameInterface
         {
             StringBuilder indexesLineString = new StringBuilder();
 
-            indexesLineString.Append(k_Space);
+            indexesLineString.Append(k_Space, k_NumberOfSpacesBeforeStartLine);
+            indexesLineString.Append(k_ColumnSeparator);
             for (int colIndex = 0; colIndex < i_Size; colIndex++)
             {
-                indexesLineString.Append($"  {Converter.ConvertNumericIndexToLetterIndex(colIndex).ToString()}");
+                indexesLineString.Append($" {Converter.ConvertNumericIndexToLetterIndex(colIndex).ToString()} {k_ColumnSeparator}");
             }
 
             Console.WriteLine(indexesLineString);
@@ -119,11 +121,12 @@ namespace MemoryGameInterface
 
         private static void printRowOfCards<T>(PlayingCards<T>[,] i_GameBoard, int i_RowIndex)
         {
-            int k_SpacesForHiddenCard = 1;
             T playCard;
+            const int k_IndexForColsInBoard = 1;
+            const int k_SpacesForHiddenCard = 3;
             StringBuilder rowOfCards = new StringBuilder();
 
-            for (int colIndex = 0; colIndex < i_GameBoard.GetLength(0); colIndex++)
+            for (int colIndex = 0; colIndex < i_GameBoard.GetLength(k_IndexForColsInBoard); colIndex++)
             {
                 PlayingCards<T> playingCard = i_GameBoard[i_RowIndex, colIndex];
                 if (playingCard.VisibilityOption == eVisibleOptions.Visible || playingCard.VisibilityOption == eVisibleOptions.TemporaryVisible)
@@ -133,7 +136,8 @@ namespace MemoryGameInterface
                 }
                 else
                 {
-                    rowOfCards.Append(' ', k_SpacesForHiddenCard);
+                    rowOfCards.Append(k_Space, k_SpacesForHiddenCard);
+                    rowOfCards.Append(k_ColumnSeparator);
                 }
             }
 
@@ -143,8 +147,10 @@ namespace MemoryGameInterface
         private static void printRowForSeparation(int i_Width)
         {
             const int k_NumberOfBottonSepratorsForEachCard = 4;
+            
             StringBuilder rowOfSepration = new StringBuilder();
 
+            rowOfSepration.Append(k_Space, k_NumberOfSpacesBeforeStartLine);
             for (int colIndex = 0; colIndex < i_Width; colIndex++)
             {
                 rowOfSepration.Append('=', k_NumberOfBottonSepratorsForEachCard);

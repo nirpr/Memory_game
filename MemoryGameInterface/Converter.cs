@@ -68,12 +68,12 @@ namespace MemoryGameInterface
             {
                 if (string.IsNullOrEmpty(i_CellReference))
                 {
-                    throw new ArgumentException("Cell reference cannot be null or empty.", nameof(i_CellReference));
+                    throw new ArgumentException("Cell reference cannot be null or empty.");
                 }
 
                 if (i_CellReference.Length < 2)
                 {
-                    throw new ArgumentException("Cell reference cannot be shorter than two characters.", nameof(i_CellReference));
+                    throw new ArgumentException("Cell reference cannot be shorter than two characters.");
                 }
 
                 int column = 0, row = 0;
@@ -84,16 +84,16 @@ namespace MemoryGameInterface
                 }
                 else
                 {
-                    throw new ArgumentException("Cell reference have to start with letter.", nameof(i_CellReference));
+                    throw new ArgumentException("Cell reference have to start with letter.");
                 }
 
-                if (int.TryParse(i_CellReference.Substring(1), out row))
+                if (int.TryParse(i_CellReference.Substring(1), out row) && row >= 1)
                 {
-                    return (column, row);
+                    return (column, row - 1);
                 }
                 else
                 {
-                    throw new ArgumentException("Invalid cell reference format, The cell reference should include number after the letter.", nameof(i_CellReference));
+                    throw new ArgumentException("Invalid cell reference format, The cell reference should include number (>=1) after the letter.");
                 }
             }
         }

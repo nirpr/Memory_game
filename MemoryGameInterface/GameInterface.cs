@@ -16,17 +16,12 @@ namespace MemoryGameInterface
             bool gameIsStillPlaying = true;
 
             m_GamePlay = gameInitilize();
-
             GameConsoleUtils.GameStartingAnnouncement();
-
             GameConsoleUtils.ShowGameBoard(m_GamePlay);
-
             while (gameIsStillPlaying)
             {
                 GameConsoleUtils.AnnounceAboutCurrentPlayerTurn(m_GamePlay);
-
                 playerMove(out gameIsStillPlaying);
-
                 if(m_GamePlay.IsGameOver())
                 {
                     GameConsoleUtils.AnnounceGameOver(m_GamePlay);
@@ -36,6 +31,8 @@ namespace MemoryGameInterface
                         int boardHeight, boardWidth;
                         askUserForBoardSize(out boardHeight, out boardWidth);
                         m_GamePlay.RestartGame(boardHeight, boardWidth);
+                        GameConsoleUtils.GameStartingAnnouncement();
+                        GameConsoleUtils.ShowGameBoard(m_GamePlay);
                     }
                     else
                     {
@@ -55,7 +52,7 @@ namespace MemoryGameInterface
             setPlayers(listOfPlayerNames);
             askUserForBoardSize(out boardHeight, out boardWidth);
 
-            GamePlay gamePlay = new GamePlay(listOfPlayerNames, 4, 4);
+            GamePlay gamePlay = new GamePlay(listOfPlayerNames, boardHeight, boardWidth);
 
             return gamePlay;
         }
@@ -103,6 +100,7 @@ namespace MemoryGameInterface
             if (m_GamePlay.IsCorrectGuess() == false)
             {
                 System.Threading.Thread.Sleep(k_TwoSecondsInMiliseconds);
+                m_GamePlay.HideVisibilityOfTemporaryTypeAndAdvanceTurn();
                 GameConsoleUtils.ShowGameBoard(m_GamePlay);
             }
         }
@@ -117,7 +115,7 @@ namespace MemoryGameInterface
                 string heightMsg = $"Please enter the board height in range [{k_BoardHeightMinimumSize}-{k_BoardHeightMaximumSize}]";
                 o_BoardHeight = GameConsoleUtils.AskUserForIntBetweenValues(heightMsg, k_BoardHeightMinimumSize, k_BoardHeightMaximumSize);
 
-                string widthMsg = $"Please enter the board height in range [{k_BoardHeightMinimumSize}-{k_BoardHeightMaximumSize}]";
+                string widthMsg = $"Please enter the board width in range [{k_BoardWidthMinimumSize}-{k_BoardWidthMaximumSize}]";
                 o_BoardWidth = GameConsoleUtils.AskUserForIntBetweenValues(widthMsg, k_BoardWidthMinimumSize, k_BoardWidthMaximumSize);
                 if((o_BoardHeight * o_BoardWidth)%2 == 0)
                 {
@@ -150,8 +148,9 @@ namespace MemoryGameInterface
             int rowIndex, colIndex;
             const bool k_WaitingTillValidSelection = true;
             const int k_NotRelevant_Value = -1;
+            const int k_IndexForRowsInBoard = 0, k_IndexForColsInBoard = 1;
 
-            while(k_WaitingTillValidSelection)
+            while (k_WaitingTillValidSelection)
             {
                 string userInput = GameConsoleUtils.askForUserInput("Please enter game cell for your move:");
 
@@ -170,6 +169,14 @@ namespace MemoryGameInterface
                 try
                 {
                     (colIndex, rowIndex) = Converter.CellReferenceConverter.ConvertCellIndex(userInput);
+                    bool isValidColIndex = 0 <= colIndex && colIndex < m_GamePlay.GameBoard.GetLength(k_IndexForColsInBoard);
+                    bool isValidRowIndex = 0 <= rowIndex && rowIndex < m_GamePlay.GameBoard.GetLength(k_IndexForRowsInBoard);
+                    if ((isValidColIndex && isValidRowIndex) != true)
+                    {
+                        Console.WriteLine("The selected location is not exist on the game board, Try again!");
+                        continue;
+                    }
+                 
                     PlayingCards<char> selectedPlayingCard = m_GamePlay.GameBoard[rowIndex, colIndex];
                     if(selectedPlayingCard.VisibilityOption != eVisibleOptions.NotVisible)
                     {
