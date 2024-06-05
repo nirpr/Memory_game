@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MemoryGameLogics
 {
@@ -96,6 +94,11 @@ namespace MemoryGameLogics
             return m_PlayersArray[this.PlayerTurn].PlayerName;
         }
 
+        public string GetNameByIndex(int i_NameIndexInPlayersArray)
+        {
+            return m_PlayersArray[i_NameIndexInPlayersArray].PlayerName;
+        }
+
         public bool IsGameOver()
         {
             return this.NumberOfVisibleCards < (m_BoardHeight * m_BoardLength);
@@ -121,7 +124,6 @@ namespace MemoryGameLogics
             PlayingCards<char>[,] gameBoard = new PlayingCards<char>[m_BoardHeight, m_BoardLength];
             int lettersIndex = 0;
             List<char> letterPoolList = k_letterPool.ToList();
-            const bool v_MakeVisible = true;
 
             if (gameBoardSize % 2 != 0)
             {
@@ -142,9 +144,7 @@ namespace MemoryGameLogics
             {
                 for (int col = 0; col < m_BoardLength; ++col)
                 {
-                    gameBoard[row, col] = new PlayingCards<char>();
-                    gameBoard[row, col].CardValue = matrixLetters[lettersIndex];
-                    gameBoard[row, col].IsVisible = !v_MakeVisible;
+                    gameBoard[row, col] = new PlayingCards<char>(matrixLetters[lettersIndex]);
                     ++lettersIndex;
                 }
             }
@@ -174,14 +174,12 @@ namespace MemoryGameLogics
             if (s_IsFirstChoice)
             {
                 m_PlayersArray[currentPlayerIndex].FirstChosenLetter = m_GameBoard[i_RowIndex, i_ColIndex];
-                m_PlayersArray[currentPlayerIndex].FirstChosenLetter.RowNumber = i_RowIndex;
-                m_PlayersArray[currentPlayerIndex].FirstChosenLetter.ColNumber = i_ColIndex;
+                m_PlayersArray[currentPlayerIndex].FirstChosenLetter.VisibilityOption = eVisibleOptions.TemporaryVisible;
             }
             else
             {
                 m_PlayersArray[currentPlayerIndex].SecondChosenLetter = m_GameBoard[i_RowIndex, i_ColIndex];
-                m_PlayersArray[currentPlayerIndex].SecondChosenLetter.RowNumber = i_RowIndex;
-                m_PlayersArray[currentPlayerIndex].SecondChosenLetter.ColNumber = i_ColIndex;
+                m_PlayersArray[currentPlayerIndex].SecondChosenLetter.VisibilityOption = eVisibleOptions.TemporaryVisible;
             }
 
             s_IsFirstChoice = !s_IsFirstChoice;
@@ -189,7 +187,6 @@ namespace MemoryGameLogics
 
         public bool IsCorrectGuess()
         {
-            const bool v_MakeVisible = true;
             bool IsCorrectGuess;
             int currentPlayerIndex = this.PlayerTurn;
             PlayingCards<char> firstChosenLetter = m_PlayersArray[currentPlayerIndex].FirstChosenLetter;
@@ -199,17 +196,23 @@ namespace MemoryGameLogics
             {
                 IsCorrectGuess = true;
                 m_PlayersArray[currentPlayerIndex].NumOfCorrectAnswers++;
-                firstChosenLetter.IsVisible = v_MakeVisible;
-                secondChosenLetter.IsVisible = v_MakeVisible;
+                firstChosenLetter.VisibilityOption = eVisibleOptions.Visible;
+                secondChosenLetter.VisibilityOption = eVisibleOptions.Visible;
                 this.NumberOfVisibleCards += 2;
             }
             else
             {
                 IsCorrectGuess = false;
-                this.PlayerTurn++;
             }
 
             return IsCorrectGuess;
+        }
+
+        public void HideVisibilityOfTemporaryTypeAndAdvanceTurn()
+        {
+            m_PlayersArray[PlayerTurn].FirstChosenLetter.VisibilityOption = eVisibleOptions.NotVisible;
+            m_PlayersArray[PlayerTurn].SecondChosenLetter.VisibilityOption = eVisibleOptions.NotVisible;
+            this.PlayerTurn++;
         }
 
         public void ComputerChoice() // need to change so it will choose only invisible cards.
@@ -225,7 +228,7 @@ namespace MemoryGameLogics
             {
                 for (int col = 0; col < m_BoardLength; ++col)
                 {
-                    if (!m_GameBoard[row, col].IsVisible)
+                    if (m_GameBoard[row, col].VisibilityOption == eVisibleOptions.NotVisible)
                     {
                         invisibleCards.Add((row, col));
                     }

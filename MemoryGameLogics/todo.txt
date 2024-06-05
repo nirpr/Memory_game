@@ -18,4 +18,5 @@
 
 
 next:
-14. add an array with valid indicies so the function computerChoice won't choose a visible cell.
+14. add an array with valid indicies so the function computerChoice won't choose a visible cell. ==== Done
+15. add getName by index. ==== Done
