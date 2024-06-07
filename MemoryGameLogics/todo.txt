@@ -20,3 +20,57 @@
 next:
 14. add an array with valid indicies so the function computerChoice won't choose a visible cell. ==== Done
 15. add getName by index. ==== Done
+
+
+last todo:
+1. review the code for meaningful names and conventions. ==== Done
+2. change to nullble irellevent variables. ==== Not possible
+3. try more edge cases
+4. need to check if i need to copy CardsValueArray in GamePlay
+
+
+a1
+b1
+c1
+d1
+a2
+b2
+c2
+d2
+a3
+b3
+c3
+d3
+a4
+b4
+c4
+d4
+a5
+b5
+c5
+d5
+a6
+b6
+c6
+d6
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

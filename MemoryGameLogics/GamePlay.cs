@@ -4,47 +4,48 @@ using System.Linq;
 
 namespace MemoryGameLogics
 {
-    public class GamePlay
+    public class GamePlay<T>
     {
-        private PlayingCards<char>[,] m_GameBoard;
+        private PlayingCards<T>[,] m_GameBoard;
         private int m_BoardHeight;
         private int m_BoardLength;
-        private List<Player> m_PlayersArray;
+        private List<Player<T>> m_PlayersArray;
         private int m_PlayerTurn;
-        private const string k_letterPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private readonly List<T> m_CardsValueArray;
         private static bool s_IsFirstChoice = true;
         private int m_NumberOfVisibleCards;
 
-        public GamePlay(List<string> i_PlayersNamesList, int i_BoardHeight, int i_BoardLenght)
+        public GamePlay(List<string> i_PlayersNamesList, int i_BoardHeight, int i_BoardLenght, List<T> i_CardsValueArray)
         {
             const bool v_IsComputer = true;
             m_PlayersArray = initPlayerArray(i_PlayersNamesList);
 
             if (m_PlayersArray.Count <= 1)
             {
-                m_PlayersArray.Add(new Player(v_IsComputer));
+                m_PlayersArray.Add(new Player<T>(v_IsComputer));
             }
             m_BoardHeight = i_BoardHeight;
             m_BoardLength = i_BoardLenght;
             m_NumberOfVisibleCards = 0;
+            m_CardsValueArray = i_CardsValueArray;
             m_PlayerTurn = 0;
             createGameBoard();
         }
 
-        private List<Player> initPlayerArray(List<string> i_PlayersNamesList)
+        private List<Player<T>> initPlayerArray(List<string> i_PlayersNamesList)
         {
             const bool v_IsComputer = true;
-            List<Player> playerArray = new List<Player>();
+            List<Player<T>> playerArray = new List<Player<T>>();
 
             for (int i = 0; i < i_PlayersNamesList.Count; ++i)
             {
-                playerArray.Add(new Player(!v_IsComputer, i_PlayersNamesList[i]));
+                playerArray.Add(new Player<T>(!v_IsComputer, i_PlayersNamesList[i]));
             }
 
             return playerArray;
         }
 
-        public PlayingCards<char>[,] GameBoard
+        public PlayingCards<T>[,] GameBoard
         {
             get
             {
@@ -84,6 +85,14 @@ namespace MemoryGameLogics
             }
         }
 
+        private List<T> cardsValueArray
+        {
+            get
+            {
+                return m_CardsValueArray;
+            }
+        }
+
         public bool IsComputerTurn()
         {
             return m_PlayersArray[this.PlayerTurn].IsComputer;
@@ -119,12 +128,12 @@ namespace MemoryGameLogics
         private void createGameBoard()
         {
             Random random = new Random();
-            List<char> matrixLetters = new List<char>();
+            List<T> matrixLetters = new List<T>();
             int gameBoardSize = m_BoardHeight * m_BoardLength;
-            PlayingCards<char>[,] gameBoard = new PlayingCards<char>[m_BoardHeight, m_BoardLength];
+            PlayingCards<T>[,] gameBoard = new PlayingCards<T>[m_BoardHeight, m_BoardLength];
+            List<T> cardValueArrayCopyToMakeChanges = new List<T>(cardsValueArray);
             int lettersIndex = 0;
-            List<char> letterPoolList = k_letterPool.ToList();
-
+            
             if (gameBoardSize % 2 != 0)
             {
                 throw new ArgumentException("The Board is not divisible by 2");
@@ -132,11 +141,11 @@ namespace MemoryGameLogics
 
             for (int i = 0; i < gameBoardSize / 2; ++i)
             {
-                int randomLetterPoolIndex = random.Next(letterPoolList.Count);
-                char letterForPair = letterPoolList[randomLetterPoolIndex];
+                int randomLetterPoolIndex = random.Next(cardValueArrayCopyToMakeChanges.Count);
+                T letterForPair = cardValueArrayCopyToMakeChanges[randomLetterPoolIndex];
                 matrixLetters.Add(letterForPair);
                 matrixLetters.Add(letterForPair);
-                letterPoolList.RemoveAt(randomLetterPoolIndex);
+                cardValueArrayCopyToMakeChanges.RemoveAt(randomLetterPoolIndex);
             }
 
             shuffleLetters(matrixLetters);
@@ -144,7 +153,7 @@ namespace MemoryGameLogics
             {
                 for (int col = 0; col < m_BoardLength; ++col)
                 {
-                    gameBoard[row, col] = new PlayingCards<char>(matrixLetters[lettersIndex]);
+                    gameBoard[row, col] = new PlayingCards<T>(matrixLetters[lettersIndex]);
                     ++lettersIndex;
                 }
             }
@@ -152,18 +161,18 @@ namespace MemoryGameLogics
             m_GameBoard = gameBoard;
         }
 
-        private void shuffleLetters(List<char> i_Letters)
+        private void shuffleLetters(List<T> i_Values)
         {
             Random random = new Random();
-            int remainingLetters = i_Letters.Count;
+            int remainingValues = i_Values.Count;
 
-            while (remainingLetters > 1)
+            while (remainingValues > 1)
             {
-                remainingLetters--;
-                int swapIndex = random.Next(remainingLetters + 1);
-                char tempLetter = i_Letters[swapIndex];
-                i_Letters[swapIndex] = i_Letters[remainingLetters];
-                i_Letters[remainingLetters] = tempLetter;
+                remainingValues--;
+                int swapIndex = random.Next(remainingValues + 1);
+                T tempValue = i_Values[swapIndex];
+                i_Values[swapIndex] = i_Values[remainingValues];
+                i_Values[remainingValues] = tempValue;
             }
         }
 
@@ -173,13 +182,13 @@ namespace MemoryGameLogics
 
             if (s_IsFirstChoice)
             {
-                m_PlayersArray[currentPlayerIndex].FirstChosenLetter = m_GameBoard[i_RowIndex, i_ColIndex];
-                m_PlayersArray[currentPlayerIndex].FirstChosenLetter.VisibilityOption = eVisibleOptions.TemporaryVisible;
+                m_PlayersArray[currentPlayerIndex].FirstChosenValue = m_GameBoard[i_RowIndex, i_ColIndex];
+                m_PlayersArray[currentPlayerIndex].FirstChosenValue.VisibilityOption = eVisibleOptions.TemporaryVisible;
             }
             else
             {
-                m_PlayersArray[currentPlayerIndex].SecondChosenLetter = m_GameBoard[i_RowIndex, i_ColIndex];
-                m_PlayersArray[currentPlayerIndex].SecondChosenLetter.VisibilityOption = eVisibleOptions.TemporaryVisible;
+                m_PlayersArray[currentPlayerIndex].SecondChosenValue = m_GameBoard[i_RowIndex, i_ColIndex];
+                m_PlayersArray[currentPlayerIndex].SecondChosenValue.VisibilityOption = eVisibleOptions.TemporaryVisible;
             }
 
             s_IsFirstChoice = !s_IsFirstChoice;
@@ -189,15 +198,15 @@ namespace MemoryGameLogics
         {
             bool IsCorrectGuess;
             int currentPlayerIndex = this.PlayerTurn;
-            PlayingCards<char> firstChosenLetter = m_PlayersArray[currentPlayerIndex].FirstChosenLetter;
-            PlayingCards<char> secondChosenLetter = m_PlayersArray[currentPlayerIndex].SecondChosenLetter;
+            PlayingCards<T> firstChosenValue = m_PlayersArray[currentPlayerIndex].FirstChosenValue;
+            PlayingCards<T> secondChosenValue = m_PlayersArray[currentPlayerIndex].SecondChosenValue;
 
-            if (firstChosenLetter.CardValue == secondChosenLetter.CardValue)
+            if (firstChosenValue.CardValue.Equals(secondChosenValue.CardValue))
             {
                 IsCorrectGuess = true;
                 m_PlayersArray[currentPlayerIndex].NumOfCorrectAnswers++;
-                firstChosenLetter.VisibilityOption = eVisibleOptions.Visible;
-                secondChosenLetter.VisibilityOption = eVisibleOptions.Visible;
+                firstChosenValue.VisibilityOption = eVisibleOptions.Visible;
+                secondChosenValue.VisibilityOption = eVisibleOptions.Visible;
                 this.NumberOfVisibleCards += 2;
             }
             else
@@ -210,8 +219,8 @@ namespace MemoryGameLogics
 
         public void HideVisibilityOfTemporaryTypeAndAdvanceTurn()
         {
-            m_PlayersArray[PlayerTurn].FirstChosenLetter.VisibilityOption = eVisibleOptions.NotVisible;
-            m_PlayersArray[PlayerTurn].SecondChosenLetter.VisibilityOption = eVisibleOptions.NotVisible;
+            m_PlayersArray[PlayerTurn].FirstChosenValue.VisibilityOption = eVisibleOptions.NotVisible;
+            m_PlayersArray[PlayerTurn].SecondChosenValue.VisibilityOption = eVisibleOptions.NotVisible;
             this.PlayerTurn++;
         }
 

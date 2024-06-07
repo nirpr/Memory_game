@@ -33,7 +33,7 @@ namespace MemoryGameInterface
             }
         }
 
-        public static void ShowGameBoard(GamePlay i_GamePlay)
+        public static void ShowGameBoard(GamePlay<char> i_GamePlay)
         {
             PlayingCards<char>[,] gameBoard = i_GamePlay.GameBoard;
 
@@ -41,7 +41,7 @@ namespace MemoryGameInterface
             GameConsoleUtils.printBoard(gameBoard);
         }
 
-        public static void AnnounceAboutCurrentPlayerTurn(GamePlay i_GamePlay)
+        public static void AnnounceAboutCurrentPlayerTurn(GamePlay<char> i_GamePlay)
         {
             int currentPlayerId = i_GamePlay.PlayerTurn;
             
@@ -55,13 +55,13 @@ namespace MemoryGameInterface
             Console.ReadLine();
         }
 
-        public static void AnnounceGameOver(GamePlay i_GamePlay)
+        public static void AnnounceGameOver(GamePlay<char> i_GamePlay)
         {
             PrintScoreBoard(i_GamePlay);
             AnnounceAboutWinner(i_GamePlay);
         }
 
-        public static void PrintScoreBoard(GamePlay i_GamePlay)
+        public static void PrintScoreBoard(GamePlay<char> i_GamePlay)
         {
             StringBuilder leaderBoard = new StringBuilder();
             List<int> scoreBoardArray = i_GamePlay.ArrayOfPlayersScores();
@@ -75,7 +75,7 @@ namespace MemoryGameInterface
             Console.WriteLine(leaderBoard);
         }
 
-        public static void AnnounceAboutWinner(GamePlay i_GamePlay)
+        public static void AnnounceAboutWinner(GamePlay<char> i_GamePlay)
         {
             List<int> scoreBoardArray = i_GamePlay.ArrayOfPlayersScores();
             int highestScoreInGame = scoreBoardArray.Max();

@@ -1,15 +1,16 @@
 ﻿using MemoryGameLogics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MemoryGameInterface
 {
     public class GameInterface
     {
-        const int k_BoardHeightMinimumSize = 4, k_BoardHeightMaximumSize = 6;
-        const int k_BoardWidthMinimumSize = 4, k_BoardWidthMaximumSize = 6;
-
-        GamePlay m_GamePlay = null;
+        private const int k_BoardHeightMinimumSize = 4, k_BoardHeightMaximumSize = 6;
+        private const int k_BoardWidthMinimumSize = 4, k_BoardWidthMaximumSize = 6;
+        private const string k_letterPool = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        GamePlay<char> m_GamePlay = null;
 
         public void StartGame()
         {
@@ -44,7 +45,7 @@ namespace MemoryGameInterface
             Console.WriteLine("Game is over, good bye!");
         }
 
-        private GamePlay gameInitilize()
+        private GamePlay<char> gameInitilize()
         {
             List<string> listOfPlayerNames = new List<string>();
             int boardHeight, boardWidth;
@@ -52,7 +53,7 @@ namespace MemoryGameInterface
             setPlayers(listOfPlayerNames);
             askUserForBoardSize(out boardHeight, out boardWidth);
 
-            GamePlay gamePlay = new GamePlay(listOfPlayerNames, boardHeight, boardWidth);
+            GamePlay<char> gamePlay = new GamePlay<char>(listOfPlayerNames, boardHeight, boardWidth, k_letterPool.ToList());
 
             return gamePlay;
         }

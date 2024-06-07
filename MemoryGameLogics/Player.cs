@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace MemoryGameLogics
 {
-    internal class Player
+    internal class Player<T>
     {
         private readonly bool r_IsComputer;
         private readonly string r_PlayerName;
         private int m_NumOfCorrectAnswers;
         private const string k_ComputerName = "Computer";
-        private PlayingCards<char> m_FirstChosenLetter;
-        private PlayingCards<char> m_SecondChosenLetter;
+        private PlayingCards<T> m_FirstChosenValue;
+        private PlayingCards<T> m_SecondChosenValue;
 
         internal Player(bool i_isComputer, string i_playerName = k_ComputerName)
         {
@@ -49,27 +44,27 @@ namespace MemoryGameLogics
             }
         }
 
-        public PlayingCards<char> FirstChosenLetter
+        public PlayingCards<T> FirstChosenValue
         {
             get
             {
-                return m_FirstChosenLetter;
+                return m_FirstChosenValue;
             }
             internal set
             {
-                m_FirstChosenLetter = value;
+                m_FirstChosenValue = value;
             }
         }
 
-        public PlayingCards<char> SecondChosenLetter
+        public PlayingCards<T> SecondChosenValue
         {
             get
             {
-                return m_SecondChosenLetter;
+                return m_SecondChosenValue;
             }
             internal set
             {
-                m_SecondChosenLetter = value;
+                m_SecondChosenValue = value;
             }
         }
     }
