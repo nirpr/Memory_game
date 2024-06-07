@@ -29,7 +29,7 @@ namespace MemoryGameLogics
             }
             internal set
             {
-                m_NumOfCorrectAnswers += value;
+                m_NumOfCorrectAnswers = value;
             }
         }
 

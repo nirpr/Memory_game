@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MemoryGameInterface
 {
@@ -76,11 +72,13 @@ namespace MemoryGameInterface
                     throw new ArgumentException("Cell reference cannot be shorter than two characters.");
                 }
 
-                int column = 0, row = 0;
+                int column = 0;
+                int row = 0;
 
                 if (char.IsLetter(i_CellReference[0]))
                 {
-                    column = i_CellReference[0] - 'A';
+                    char chosenLetterToUpper = char.ToUpper(i_CellReference[0]);
+                    column = chosenLetterToUpper - 'A';
                 }
                 else
                 {

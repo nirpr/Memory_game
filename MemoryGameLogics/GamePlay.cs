@@ -26,7 +26,7 @@ namespace MemoryGameLogics
             }
             m_BoardHeight = i_BoardHeight;
             m_BoardLength = i_BoardLenght;
-            m_NumberOfVisibleCards = 0;  // change after finished array
+            m_NumberOfVisibleCards = 0;
             m_PlayerTurn = 0;
             createGameBoard();
         }
@@ -60,13 +60,13 @@ namespace MemoryGameLogics
             }
             private set
             {
-                if (m_PlayerTurn < m_PlayersArray.Count)
+                if (m_PlayerTurn < m_PlayersArray.Count - 1)
                 {
-                    m_PlayerTurn += value;
+                    m_PlayerTurn = value;
                 }
                 else
                 {
-                    m_PlayerTurn = 1;
+                    m_PlayerTurn = 0;
                 }
             }
 
@@ -80,7 +80,7 @@ namespace MemoryGameLogics
             }
             private set
             {
-                m_NumberOfVisibleCards++;
+                m_NumberOfVisibleCards = value;
             }
         }
 
@@ -101,7 +101,7 @@ namespace MemoryGameLogics
 
         public bool IsGameOver()
         {
-            return this.NumberOfVisibleCards < (m_BoardHeight * m_BoardLength);
+            return this.NumberOfVisibleCards >= (m_BoardHeight * m_BoardLength);
         }
 
         public List<int> ArrayOfPlayersScores()
@@ -215,7 +215,7 @@ namespace MemoryGameLogics
             this.PlayerTurn++;
         }
 
-        public void ComputerChoice() // need to change so it will choose only invisible cards.
+        public void ComputerChoice()
         {
             Random random = new Random();
             (int, int) randomRowAndColTuppel;
@@ -247,6 +247,11 @@ namespace MemoryGameLogics
             m_BoardLength = i_BoardLenght;
             m_NumberOfVisibleCards = 0;
             m_PlayerTurn = 0;
+
+            foreach (var player in m_PlayersArray)
+            {
+                player.NumOfCorrectAnswers = 0;
+            }
             createGameBoard();
         }
     }

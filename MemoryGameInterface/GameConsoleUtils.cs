@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MemoryGameInterface
 {
@@ -28,7 +27,7 @@ namespace MemoryGameInterface
                 }
                 else
                 {
-                    Console.Write($" {(rowIndex / 2)+1} {k_ColumnSeparator}");
+                    Console.Write($" {(rowIndex / 2) + 1} {k_ColumnSeparator}");
                     printRowOfCards(i_Board, rowIndex / 2);
                 }
             }
@@ -46,12 +45,12 @@ namespace MemoryGameInterface
         {
             int currentPlayerId = i_GamePlay.PlayerTurn;
             
-            Console.WriteLine($"It's {i_GamePlay.CurrentPlayerName()}'s turn now (Player{currentPlayerId+1})");
+            Console.WriteLine($"It's {i_GamePlay.CurrentPlayerName()}'s turn now (Player{currentPlayerId + 1})");
         }
 
         public static void GameStartingAnnouncement()
         {
-            Console.WriteLine("Everything is ready for start the game, let's start!");
+            Console.WriteLine("Everything is ready, let's start!");
             Console.WriteLine("Press any key to continue...");
             Console.ReadLine();
         }
@@ -70,7 +69,7 @@ namespace MemoryGameInterface
             leaderBoard.AppendLine("--------- Score Board ---------");
             for(int i=0; i<scoreBoardArray.Count; i++)
             {
-                leaderBoard.AppendLine($"Player{i+1}: {i_GamePlay.GetNameByIndex(i)}, Score: {scoreBoardArray[i]}");
+                leaderBoard.AppendLine($"Player{i + 1}: {i_GamePlay.GetNameByIndex(i)}, Score: {scoreBoardArray[i]}");
             }
 
             Console.WriteLine(leaderBoard);
@@ -159,7 +158,7 @@ namespace MemoryGameInterface
             Console.WriteLine(rowOfSepration);
         }
 
-        public static string askForUserInput(string i_MessageForUser)
+        public static string AskForUserInput(string i_MessageForUser)
         {
             Console.WriteLine(i_MessageForUser);
 
@@ -179,7 +178,7 @@ namespace MemoryGameInterface
 
             while (k_WaitingTillValidInput)
             {
-                string userInput = askForUserInput(i_questionForUser);
+                string userInput = AskForUserInput(i_questionForUser);
                 bool isInputValid = validateYesOrNoInput(userInput);
                 if (isInputValid)
                 {
@@ -199,7 +198,7 @@ namespace MemoryGameInterface
             while (k_WaitingTillValidInput)
             {
                 int userInputInt;
-                string userInput = askForUserInput(i_questionForUser);
+                string userInput = AskForUserInput(i_questionForUser);
                 bool isInputValid = int.TryParse(userInput, out userInputInt);
                 bool isInputInRange = i_MinValue <= userInputInt && userInputInt <= i_MaxValue;
 

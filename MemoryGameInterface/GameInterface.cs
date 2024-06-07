@@ -41,7 +41,7 @@ namespace MemoryGameInterface
                 }
             }
 
-            Console.WriteLine("Game is over, good bye !");
+            Console.WriteLine("Game is over, good bye!");
         }
 
         private GamePlay gameInitilize()
@@ -66,33 +66,40 @@ namespace MemoryGameInterface
 
             if (m_GamePlay.IsComputerTurn())
             {
-                o_GameIsStillPlaying = false;
+                o_GameIsStillPlaying = true;
                 for (int guess = 1; guess <= k_NumberOfGuesses; guess++)
                 {
-                    GameConsoleUtils.ShowGameBoard(m_GamePlay);
+                    m_GamePlay.ComputerChoice();
                     if (guess == k_FirstGuess)
                     {
                         System.Threading.Thread.Sleep(k_TwoSecondsInMiliseconds);
+                        GameConsoleUtils.ShowGameBoard(m_GamePlay);
+                        System.Threading.Thread.Sleep(k_TwoSecondsInMiliseconds);
+                    }
+                    else
+                    {
+                        GameConsoleUtils.ShowGameBoard(m_GamePlay);
                     }
                 }
             }
             else
             {
-                int rowIndex, colIndex;
+                int? rowIndex, colIndex;
                 bool playerWantQuitGame;
 
                 for (int guess = 1; guess <= k_NumberOfGuesses; guess++)
                 {
                     selectGameCell(out rowIndex, out colIndex, out playerWantQuitGame);
-                    if (playerWantQuitGame && GameConsoleUtils.AskUserForYesOrNoQuestion("Are you sure you want Quit the game ? [Y/N]"))
+                    if (playerWantQuitGame && GameConsoleUtils.AskUserForYesOrNoQuestion("Are you sure you want Quit the game? [Y/N]"))
                     {
                         o_GameIsStillPlaying = false;
+                        return;
                     }
                     else
                     {
                         o_GameIsStillPlaying = true;
                     }
-                    m_GamePlay.CellChosenByPlayer(rowIndex, colIndex);
+                    m_GamePlay.CellChosenByPlayer((int)rowIndex, (int)colIndex);
                     GameConsoleUtils.ShowGameBoard(m_GamePlay);
                 }
             }
@@ -112,12 +119,12 @@ namespace MemoryGameInterface
 
             while (v_WaitingTillValidInput)
             {
-                string heightMsg = $"Please enter the board height in range [{k_BoardHeightMinimumSize}-{k_BoardHeightMaximumSize}]";
+                string heightMsg = $"Please choose the board height {k_BoardHeightMinimumSize}/{k_BoardHeightMaximumSize}";
                 o_BoardHeight = GameConsoleUtils.AskUserForIntBetweenValues(heightMsg, k_BoardHeightMinimumSize, k_BoardHeightMaximumSize);
 
-                string widthMsg = $"Please enter the board width in range [{k_BoardWidthMinimumSize}-{k_BoardWidthMaximumSize}]";
+                string widthMsg = $"Please choose the board width {k_BoardWidthMinimumSize}/{k_BoardWidthMaximumSize}";
                 o_BoardWidth = GameConsoleUtils.AskUserForIntBetweenValues(widthMsg, k_BoardWidthMinimumSize, k_BoardWidthMaximumSize);
-                if((o_BoardHeight * o_BoardWidth)%2 == 0)
+                if((o_BoardHeight * o_BoardWidth) % 2 == 0)
                 {
                     Console.WriteLine($"The gameboard selected to be in size of {o_BoardHeight}x{o_BoardWidth}");
                     break;
@@ -131,34 +138,34 @@ namespace MemoryGameInterface
 
         private void setPlayers(List<string> i_ListOfPlayerNames)
         {
-            string playerOneName = GameConsoleUtils.askForUserInput("Hello, What is the name of the first player ?");
+            string playerOneName = GameConsoleUtils.AskForUserInput("Hello, What is the name of the first player?");
             i_ListOfPlayerNames.Add(playerOneName);
 
             bool isGameAgaintsComputer = GameConsoleUtils.AskUserForYesOrNoQuestion("Do you want to play against the computer? [Y/N]");
 
             if (isGameAgaintsComputer == false)
             {
-                string playerTwoName = GameConsoleUtils.askForUserInput("What is the name of the second player ?");
+                string playerTwoName = GameConsoleUtils.AskForUserInput("What is the name of the second player ?");
                 i_ListOfPlayerNames.Add(playerTwoName);
             }
         }
 
-        private void selectGameCell(out int o_rowIndex, out int o_colIndex, out bool o_PlayerWantQuit)
+        private void selectGameCell(out int? o_rowIndex, out int? o_colIndex, out bool o_PlayerWantQuit)
         {
             int rowIndex, colIndex;
             const bool k_WaitingTillValidSelection = true;
-            const int k_NotRelevant_Value = -1;
-            const int k_IndexForRowsInBoard = 0, k_IndexForColsInBoard = 1;
+            const int k_IndexForRowsInBoard = 0;
+            const int k_IndexForColsInBoard = 1;
 
             while (k_WaitingTillValidSelection)
             {
-                string userInput = GameConsoleUtils.askForUserInput("Please enter game cell for your move:");
+                string userInput = GameConsoleUtils.AskForUserInput("Please choose a card for your move:");
 
-                if(userInput == "Q")
+                if(userInput == "Q" || userInput == "q")
                 {
                     o_PlayerWantQuit = true;
-                    o_rowIndex = k_NotRelevant_Value;
-                    o_colIndex = k_NotRelevant_Value;
+                    o_rowIndex = null;
+                    o_colIndex = null;
                     return;
                 }
                 else
@@ -173,14 +180,14 @@ namespace MemoryGameInterface
                     bool isValidRowIndex = 0 <= rowIndex && rowIndex < m_GamePlay.GameBoard.GetLength(k_IndexForRowsInBoard);
                     if ((isValidColIndex && isValidRowIndex) != true)
                     {
-                        Console.WriteLine("The selected location is not exist on the game board, Try again!");
+                        Console.WriteLine("The selected card does not exist on the game board, Try again!");
                         continue;
                     }
                  
                     PlayingCards<char> selectedPlayingCard = m_GamePlay.GameBoard[rowIndex, colIndex];
                     if(selectedPlayingCard.VisibilityOption != eVisibleOptions.NotVisible)
                     {
-                        Console.WriteLine("The selected location is already displayed You have reached Unable to select it, try again");
+                        Console.WriteLine("The selected card is already displayed, try again");
                     }
                     else
                     {
