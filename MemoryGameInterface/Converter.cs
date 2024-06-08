@@ -69,7 +69,7 @@ namespace MemoryGameInterface
 
                 if (i_CellReference.Length < 2)
                 {
-                    throw new ArgumentException("Cell reference cannot be shorter than two characters.");
+                    throw new ArgumentException("Cell reference cannot be shorter than two characters");
                 }
 
                 int column = 0;
@@ -82,7 +82,7 @@ namespace MemoryGameInterface
                 }
                 else
                 {
-                    throw new ArgumentException("Cell reference have to start with letter.");
+                    throw new ArgumentException("Cell reference have to start with letter");
                 }
 
                 if (int.TryParse(i_CellReference.Substring(1), out row) && row >= 1)
@@ -91,7 +91,7 @@ namespace MemoryGameInterface
                 }
                 else
                 {
-                    throw new ArgumentException("Invalid cell reference format, The cell reference should include number (>=1) after the letter.");
+                    throw new ArgumentException("Invalid cell reference format, The cell reference should include number (>=1) after the letter");
                 }
             }
         }

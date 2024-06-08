@@ -6,9 +6,7 @@ namespace MemoryGameLogics
 {
     public class GamePlay<T>
     {
-        private PlayingCards<T>[,] m_GameBoard;
-        private int m_BoardHeight;
-        private int m_BoardLength;
+        private GameBoard<T> m_GameBoard;
         private List<Player<T>> m_PlayersArray;
         private int m_PlayerTurn;
         private readonly List<T> m_CardsValueArray;
@@ -24,12 +22,10 @@ namespace MemoryGameLogics
             {
                 m_PlayersArray.Add(new Player<T>(v_IsComputer));
             }
-            m_BoardHeight = i_BoardHeight;
-            m_BoardLength = i_BoardLenght;
             m_NumberOfVisibleCards = 0;
             m_CardsValueArray = i_CardsValueArray;
             m_PlayerTurn = 0;
-            createGameBoard();
+            m_GameBoard = new GameBoard<T>(i_BoardHeight, i_BoardLenght, m_CardsValueArray);
         }
 
         private List<Player<T>> initPlayerArray(List<string> i_PlayersNamesList)
@@ -49,7 +45,7 @@ namespace MemoryGameLogics
         {
             get
             {
-                return m_GameBoard;
+                return m_GameBoard.Board;
             }
         }
 
@@ -73,26 +69,6 @@ namespace MemoryGameLogics
 
         }
 
-        public int NumberOfVisibleCards
-        {
-            get
-            {
-                return m_NumberOfVisibleCards;
-            }
-            private set
-            {
-                m_NumberOfVisibleCards = value;
-            }
-        }
-
-        private List<T> cardsValueArray
-        {
-            get
-            {
-                return m_CardsValueArray;
-            }
-        }
-
         public bool IsComputerTurn()
         {
             return m_PlayersArray[this.PlayerTurn].IsComputer;
@@ -110,7 +86,7 @@ namespace MemoryGameLogics
 
         public bool IsGameOver()
         {
-            return this.NumberOfVisibleCards >= (m_BoardHeight * m_BoardLength);
+            return m_NumberOfVisibleCards >= (m_GameBoard.BoardHeight * m_GameBoard.BoardLength);
         }
 
         public List<int> ArrayOfPlayersScores()
@@ -125,69 +101,18 @@ namespace MemoryGameLogics
             return playersScores;
         }
 
-        private void createGameBoard()
-        {
-            Random random = new Random();
-            List<T> matrixLetters = new List<T>();
-            int gameBoardSize = m_BoardHeight * m_BoardLength;
-            PlayingCards<T>[,] gameBoard = new PlayingCards<T>[m_BoardHeight, m_BoardLength];
-            List<T> cardValueArrayCopyToMakeChanges = new List<T>(cardsValueArray);
-            int lettersIndex = 0;
-            
-            if (gameBoardSize % 2 != 0)
-            {
-                throw new ArgumentException("The Board is not divisible by 2");
-            }
-
-            for (int i = 0; i < gameBoardSize / 2; ++i)
-            {
-                int randomLetterPoolIndex = random.Next(cardValueArrayCopyToMakeChanges.Count);
-                T letterForPair = cardValueArrayCopyToMakeChanges[randomLetterPoolIndex];
-                matrixLetters.Add(letterForPair);
-                matrixLetters.Add(letterForPair);
-                cardValueArrayCopyToMakeChanges.RemoveAt(randomLetterPoolIndex);
-            }
-
-            shuffleLetters(matrixLetters);
-            for (int row = 0; row < m_BoardHeight; ++row)
-            {
-                for (int col = 0; col < m_BoardLength; ++col)
-                {
-                    gameBoard[row, col] = new PlayingCards<T>(matrixLetters[lettersIndex]);
-                    ++lettersIndex;
-                }
-            }
-
-            m_GameBoard = gameBoard;
-        }
-
-        private void shuffleLetters(List<T> i_Values)
-        {
-            Random random = new Random();
-            int remainingValues = i_Values.Count;
-
-            while (remainingValues > 1)
-            {
-                remainingValues--;
-                int swapIndex = random.Next(remainingValues + 1);
-                T tempValue = i_Values[swapIndex];
-                i_Values[swapIndex] = i_Values[remainingValues];
-                i_Values[remainingValues] = tempValue;
-            }
-        }
-
         public void CellChosenByPlayer(int i_RowIndex, int i_ColIndex)
         {
             int currentPlayerIndex = this.PlayerTurn;
 
             if (s_IsFirstChoice)
             {
-                m_PlayersArray[currentPlayerIndex].FirstChosenValue = m_GameBoard[i_RowIndex, i_ColIndex];
+                m_PlayersArray[currentPlayerIndex].FirstChosenValue = m_GameBoard.Board[i_RowIndex, i_ColIndex];
                 m_PlayersArray[currentPlayerIndex].FirstChosenValue.VisibilityOption = eVisibleOptions.TemporaryVisible;
             }
             else
             {
-                m_PlayersArray[currentPlayerIndex].SecondChosenValue = m_GameBoard[i_RowIndex, i_ColIndex];
+                m_PlayersArray[currentPlayerIndex].SecondChosenValue = m_GameBoard.Board[i_RowIndex, i_ColIndex];
                 m_PlayersArray[currentPlayerIndex].SecondChosenValue.VisibilityOption = eVisibleOptions.TemporaryVisible;
             }
 
@@ -207,7 +132,7 @@ namespace MemoryGameLogics
                 m_PlayersArray[currentPlayerIndex].NumOfCorrectAnswers++;
                 firstChosenValue.VisibilityOption = eVisibleOptions.Visible;
                 secondChosenValue.VisibilityOption = eVisibleOptions.Visible;
-                this.NumberOfVisibleCards += 2;
+                m_NumberOfVisibleCards += 2;
             }
             else
             {
@@ -233,11 +158,11 @@ namespace MemoryGameLogics
 
             List<(int, int)> invisibleCards = new List<(int, int)>();
 
-            for (int row = 0; row < m_BoardHeight; ++row)
+            for (int row = 0; row < m_GameBoard.BoardHeight; ++row)
             {
-                for (int col = 0; col < m_BoardLength; ++col)
+                for (int col = 0; col < m_GameBoard.BoardLength; ++col)
                 {
-                    if (m_GameBoard[row, col].VisibilityOption == eVisibleOptions.NotVisible)
+                    if (m_GameBoard.Board[row, col].VisibilityOption == eVisibleOptions.NotVisible)
                     {
                         invisibleCards.Add((row, col));
                     }
@@ -252,8 +177,6 @@ namespace MemoryGameLogics
 
         public void RestartGame(int i_BoardHeight, int i_BoardLenght)
         {
-            m_BoardHeight = i_BoardHeight;
-            m_BoardLength = i_BoardLenght;
             m_NumberOfVisibleCards = 0;
             m_PlayerTurn = 0;
 
@@ -261,7 +184,7 @@ namespace MemoryGameLogics
             {
                 player.NumOfCorrectAnswers = 0;
             }
-            createGameBoard();
+            m_GameBoard.RestartBoard(i_BoardHeight, i_BoardLenght, m_CardsValueArray);
         }
     }
 }

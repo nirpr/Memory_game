@@ -100,7 +100,7 @@ namespace MemoryGameInterface
             }
             else
             {
-                Console.WriteLine($"The winner of this round of the game is {Winners[0]} with Score of {highestScoreInGame}!");
+                Console.WriteLine($"The winner of this round is {Winners[0]} with Score of {highestScoreInGame}!");
             }
         }
 

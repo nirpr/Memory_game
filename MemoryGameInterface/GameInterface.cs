@@ -91,7 +91,7 @@ namespace MemoryGameInterface
                 for (int guess = 1; guess <= k_NumberOfGuesses; guess++)
                 {
                     selectGameCell(out rowIndex, out colIndex, out playerWantQuitGame);
-                    if (playerWantQuitGame && GameConsoleUtils.AskUserForYesOrNoQuestion("Are you sure you want Quit the game? [Y/N]"))
+                    if (playerWantQuitGame)
                     {
                         o_GameIsStillPlaying = false;
                         return;
@@ -132,7 +132,7 @@ namespace MemoryGameInterface
                 }
                 else
                 {
-                    Console.WriteLine($"Invalid size, The total number of squares on the board should be even. Try again !");
+                    Console.WriteLine($"Invalid size, The total number of squares on the board should be even. Try again!");
                 }
             }
         }
@@ -146,7 +146,7 @@ namespace MemoryGameInterface
 
             if (isGameAgaintsComputer == false)
             {
-                string playerTwoName = GameConsoleUtils.AskForUserInput("What is the name of the second player ?");
+                string playerTwoName = GameConsoleUtils.AskForUserInput("What is the name of the second player?");
                 i_ListOfPlayerNames.Add(playerTwoName);
             }
         }
