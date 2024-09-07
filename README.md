@@ -17,7 +17,7 @@ The two parts are fully separated. The game interface only interacts with the ga
 ## Installation
 1. Clone this repository to your local machine:
    ```bash
-   git clone https://github.com/nirpr/Ex02-Csharp.git
+   git clone https://github.com/nirpr/Memory_game.git
 2. Open the solution in Visual Studio.
 3. Build the solution to restore any missing NuGet packages.
 4. Run the game.
